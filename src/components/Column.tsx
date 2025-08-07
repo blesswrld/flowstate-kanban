@@ -1,6 +1,7 @@
 "use client";
 
-import { SortableContext, useSortable } from "@dnd-kit/sortable";
+import { SortableContext } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
 import { ColumnId, Task } from "@/lib/types";
 import { useMemo } from "react";
 import { TaskCard } from "./TaskCard";
@@ -11,25 +12,45 @@ interface ColumnProps {
     title: string;
     tasks: Task[];
     onAddTask: (columnId: ColumnId, content: string) => void;
+    onDeleteTask: (id: string) => void;
 }
 
-export function Column({ id, title, tasks, onAddTask }: ColumnProps) {
+export function Column({
+    id,
+    title,
+    tasks,
+    onAddTask,
+    onDeleteTask,
+}: ColumnProps) {
     const tasksIds = useMemo(() => {
         return tasks.map((task) => task.id);
     }, [tasks]);
 
-    const { setNodeRef } = useSortable({ id, data: { type: "Column" } });
+    // Делаем колонку зоной, КУДА можно перетащить задачу
+    const { setNodeRef } = useDroppable({
+        id,
+        data: {
+            type: "Column",
+        },
+    });
 
     return (
         <div
             ref={setNodeRef}
-            className="flex flex-col w-full sm:w-1/3 bg-gray-100 dark:bg-gray-900/50 rounded-lg p-4"
+            className="flex flex-col w-full max-w-sm flex-shrink-0 bg-gray-100 dark:bg-gray-900/50 rounded-lg p-4"
         >
-            <h2 className="text-lg font-bold mb-4">{title}</h2>
-            <div className="flex flex-grow flex-col gap-4">
+            <h2 className="text-lg font-semibold mb-4 text-center sm:text-left">
+                {title}
+            </h2>
+            <div className="flex flex-grow flex-col gap-4 min-h-[100px]">
+                {/* Контекст для сортировки задач ВНУТРИ этой колонки */}
                 <SortableContext items={tasksIds}>
                     {tasks.map((task) => (
-                        <TaskCard key={task.id} task={task} />
+                        <TaskCard
+                            key={task.id}
+                            task={task}
+                            onDelete={onDeleteTask}
+                        />
                     ))}
                 </SortableContext>
             </div>
