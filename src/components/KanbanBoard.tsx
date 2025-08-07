@@ -16,6 +16,7 @@ import { Column } from "./Column";
 import { TaskCard } from "./TaskCard";
 import ReactConfetti from "react-confetti";
 import { KanbanFilters } from "./KanbanFilters";
+import { HowToUseKanban } from "./HowToUseKanban";
 
 export function KanbanBoard() {
     const [isConfettiActive, setIsConfettiActive] = useState(false);
@@ -137,6 +138,11 @@ export function KanbanBoard() {
                     ) : null}
                 </DragOverlay>
             </DndContext>
+
+            {/* ДОБАВЛЯЕМ ПЛАШКУ В КОНЦЕ */}
+            <div className="mt-16 w-full max-w-2xl mx-auto">
+                <HowToUseKanban />
+            </div>
         </>
     );
 }
