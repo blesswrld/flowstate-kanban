@@ -3,7 +3,7 @@ name: CI Test for Webhook
 on:
     push:
         branches:
-            - main # Укажите здесь вашу главную ветку (может быть 'master')
+            - main
 
 jobs:
     test-webhook:
